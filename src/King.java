@@ -12,6 +12,9 @@ public class King extends Figure {
 
     @Override
     public ArrayList<Pair> checkGo(ArrayList<Figure> black, ArrayList<Figure> white) {
+        ArrayList<Pair> ans = new ArrayList<>();
+        ArrayList<Figure> cur = (ArrayList<Figure>) black.clone();
+        cur.addAll(white);
         return null;
     }
 }

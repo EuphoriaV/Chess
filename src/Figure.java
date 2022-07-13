@@ -29,6 +29,8 @@ public abstract class Figure {
     public boolean isBlack() {
         return isBlack;
     }
+
     public abstract ArrayList<Pair> checkEat(ArrayList<Figure> black, ArrayList<Figure> white);
+
     public abstract ArrayList<Pair> checkGo(ArrayList<Figure> black, ArrayList<Figure> white);
 }

@@ -1,10 +1,8 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class MyPanel extends JPanel {
     boolean whiteTurn = false;
@@ -31,7 +29,7 @@ public class MyPanel extends JPanel {
         black.add(new Rook(4, 0, true));
         black.add(new Knight(4, 1, true));
         black.add(new Bishop(0, 2, true));
-        black.add(new Queen(0, 3, true));
+        black.add(new Queen(4, 2, true));
         black.add(new King(0, 4, true));
         black.add(new Bishop(4, 5, true));
         black.add(new Knight(4, 6, true));
@@ -41,10 +39,10 @@ public class MyPanel extends JPanel {
         }
         white.add(new Rook(4, 3, false));
         white.add(new Knight(7, 1, false));
-        white.add(new Bishop(7, 2, false));
-        white.add(new Queen(7, 3, false));
+        white.add(new Bishop(3, 4, false));
+        white.add(new Queen(0, 0, false));
         white.add(new King(7, 4, false));
-        white.add(new Bishop(7, 5, false));
+        white.add(new Bishop(5, 5, false));
         white.add(new Knight(7, 6, false));
         white.add(new Rook(7, 7, false));
         for (int i = 0; i < 8; i++) {
@@ -65,10 +63,7 @@ public class MyPanel extends JPanel {
                         }
                     }
                 }
-                if(currentFigure == null){
-                    eat = new ArrayList<>();
-                    go = new ArrayList<>();
-                } else {
+                if (currentFigure != null) {
                     eat = currentFigure.checkEat(black, white);
                     go = currentFigure.checkGo(black, white);
                 }

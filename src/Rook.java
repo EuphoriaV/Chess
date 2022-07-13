@@ -9,14 +9,14 @@ public class Rook extends Figure {
     @Override
     public ArrayList<Pair> checkEat(ArrayList<Figure> black, ArrayList<Figure> white) {
         ArrayList<Pair> ans = new ArrayList<>();
-        ArrayList<Figure> cur = black;
+        ArrayList<Figure> cur = (ArrayList<Figure>) black.clone();
         cur.addAll(white);
         outerloop:
         for (int i = J + 1; i < 8; i++) {
             for (Figure figure : cur) {
                 if (figure.getI() == I && figure.getJ() == i) {
                     if (isBlack != figure.isBlack()) {
-                        ans.add(new Pair(I, i));
+                        ans.add(new Pair(figure.getI(), figure.getJ()));
                     }
                     break outerloop;
                 }
@@ -27,7 +27,7 @@ public class Rook extends Figure {
             for (Figure figure : cur) {
                 if (figure.getI() == I && figure.getJ() == i) {
                     if (isBlack != figure.isBlack()) {
-                        ans.add(new Pair(I, i));
+                        ans.add(new Pair(figure.getI(), figure.getJ()));
                     }
                     break outerloop;
                 }
@@ -38,7 +38,7 @@ public class Rook extends Figure {
             for (Figure figure : cur) {
                 if (figure.getI() == i && figure.getJ() == J) {
                     if (isBlack != figure.isBlack()) {
-                        ans.add(new Pair(i, J));
+                        ans.add(new Pair(figure.getI(), figure.getJ()));
                     }
                     break outerloop;
                 }
@@ -49,7 +49,7 @@ public class Rook extends Figure {
             for (Figure figure : cur) {
                 if (figure.getI() == i && figure.getJ() == J) {
                     if (isBlack != figure.isBlack()) {
-                        ans.add(new Pair(i, J));
+                        ans.add(new Pair(figure.getI(), figure.getJ()));
                     }
                     break outerloop;
                 }
@@ -61,7 +61,7 @@ public class Rook extends Figure {
     @Override
     public ArrayList<Pair> checkGo(ArrayList<Figure> black, ArrayList<Figure> white) {
         ArrayList<Pair> ans = new ArrayList<>();
-        ArrayList<Figure> cur = black;
+        ArrayList<Figure> cur = (ArrayList<Figure>) black.clone();
         cur.addAll(white);
         outerloop:
         for (int i = J + 1; i < 8; i++) {
