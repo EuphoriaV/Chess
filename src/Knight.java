@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class Knight extends Figure {
     public Knight(int i, int j, boolean isBlack) {
@@ -30,6 +29,7 @@ public class Knight extends Figure {
                 for (Figure figure : cur) {
                     if (figure.getI() == i && figure.getJ() == j) {
                         good = false;
+                        break;
                     }
                 }
                 if (good && Math.abs(getI() - i) * Math.abs(getJ() - j) == 2) {

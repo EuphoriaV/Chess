@@ -1,5 +1,6 @@
 public class Pair {
-    private int i, j;
+    private final int i;
+    private final int j;
 
     public Pair(int i, int j) {
         this.i = i;

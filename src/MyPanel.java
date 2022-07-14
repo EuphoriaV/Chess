@@ -1,71 +1,37 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.ArrayList;
-import java.util.Arrays;
 
 public class MyPanel extends JPanel {
-    boolean whiteTurn = false;
-    int width, height, dx, size, curI = -1, curJ = -1;
-    Cell[][] board;
-    Point cursor;
-    Figure currentFigure;
-    ArrayList<Figure> black = new ArrayList<>();
-    ArrayList<Figure> white = new ArrayList<>();
-    ArrayList<Pair> eat = new ArrayList<>();
-    ArrayList<Pair> go = new ArrayList<>();
+    private final int width;
+    private final int height;
+    private Point cursor;
+    private final Game game;
+    private final Cell[][] board;
 
     public MyPanel(int w, int h) {
         width = w;
         height = h;
-        dx = (width - height) / 2;
-        size = (height / 8);
+        int dx = (width - height) / 2;
+        int size = (height / 8);
         board = new Cell[8][8];
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 board[i][j] = new Cell(dx + j * size, i * size, size, size);
             }
         }
-        black.add(new Rook(4, 0, true));
-        black.add(new Knight(4, 1, true));
-        black.add(new Bishop(0, 2, true));
-        black.add(new Queen(4, 2, true));
-        black.add(new King(0, 4, true));
-        black.add(new Bishop(4, 5, true));
-        black.add(new Knight(4, 6, true));
-        black.add(new Rook(0, 7, true));
-        for (int i = 0; i < 8; i++) {
-            black.add(new Pawn(1, i, true));
-        }
-        white.add(new Rook(4, 3, false));
-        white.add(new Knight(7, 1, false));
-        white.add(new Bishop(3, 4, false));
-        white.add(new Queen(0, 0, false));
-        white.add(new King(7, 4, false));
-        white.add(new Bishop(5, 5, false));
-        white.add(new Knight(7, 6, false));
-        white.add(new Rook(7, 7, false));
-        for (int i = 0; i < 8; i++) {
-            white.add(new Pawn(6, i, false));
-        }
+        game = new Game();
         Timer timer = new Timer(5, null);
-        timer.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                cursor = MouseInfo.getPointerInfo().getLocation();
-                repaint();
-                for (int i = 0; i < 8; i++) {
-                    for (int j = 0; j < 8; j++) {
-                        Cell a = board[i][j];
-                        if (cursor.getX() <= a.getX1() && cursor.getX() >= a.getX0() && cursor.getY() <= a.getY1() && cursor.getY() >= a.getY0()) {
-                            curJ = j;
-                            curI = i;
-                        }
+        timer.addActionListener(e -> {
+            cursor = MouseInfo.getPointerInfo().getLocation();
+            repaint();
+            for (int i = 0; i < 8; i++) {
+                for (int j = 0; j < 8; j++) {
+                    Cell a = board[i][j];
+                    if (cursor.getX() <= a.getX1() && cursor.getX() >= a.getX0() && cursor.getY() <= a.getY1() && cursor.getY() >= a.getY0()) {
+                        game.setCurJ(j);
+                        game.setCurI(i);
                     }
-                }
-                if (currentFigure != null) {
-                    eat = currentFigure.checkEat(black, white);
-                    go = currentFigure.checkGo(black, white);
                 }
             }
         });
@@ -77,21 +43,7 @@ public class MyPanel extends JPanel {
 
             @Override
             public void mousePressed(MouseEvent e) {
-                if (whiteTurn) {
-                    for (Figure figure : white) {
-                        if (figure.getJ() == curJ && figure.getI() == curI) {
-                            currentFigure = figure;
-                            break;
-                        }
-                    }
-                } else {
-                    for (Figure figure : black) {
-                        if (figure.getJ() == curJ && figure.getI() == curI) {
-                            currentFigure = figure;
-                            break;
-                        }
-                    }
-                }
+                game.act();
             }
 
             @Override
@@ -106,7 +58,6 @@ public class MyPanel extends JPanel {
             public void mouseExited(MouseEvent e) {
             }
         });
-
         setPreferredSize(new Dimension(width, height));
     }
 
@@ -123,9 +74,36 @@ public class MyPanel extends JPanel {
                 }
                 Cell a = board[i][j];
                 g2d.fillRect(a.getX0(), a.getY0(), a.getWidth(), a.getHeight());
+                g2d.setPaint(Color.BLACK);
+                g2d.drawRect(a.getX0(), a.getY0(), a.getWidth(), a.getHeight());
             }
         }
-        for (Figure figure : black) {
+        if (game.getCurrentFigure() != null) {
+            g2d.setPaint(Color.YELLOW);
+            Cell a = board[game.getCurrentFigure().getI()][game.getCurrentFigure().getJ()];
+            g2d.fillRect(a.getX0(), a.getY0(), a.getWidth(), a.getHeight());
+            g2d.setPaint(Color.BLACK);
+            g2d.drawRect(a.getX0(), a.getY0(), a.getWidth(), a.getHeight());
+        }
+        if (game.getEat() != null) {
+            for (Pair pair : game.getEat()) {
+                g2d.setPaint(Color.RED);
+                Cell a = board[pair.getI()][pair.getJ()];
+                g2d.fillRect(a.getX0(), a.getY0(), a.getWidth(), a.getHeight());
+                g2d.setPaint(Color.BLACK);
+                g2d.drawRect(a.getX0(), a.getY0(), a.getWidth(), a.getHeight());
+            }
+        }
+        if (game.getGo() != null) {
+            for (Pair pair : game.getGo()) {
+                g2d.setPaint(Color.GREEN);
+                Cell a = board[pair.getI()][pair.getJ()];
+                g2d.fillRect(a.getX0(), a.getY0(), a.getWidth(), a.getHeight());
+                g2d.setPaint(Color.BLACK);
+                g2d.drawRect(a.getX0(), a.getY0(), a.getWidth(), a.getHeight());
+            }
+        }
+        for (Figure figure : game.getBlack()) {
             Cell a = board[figure.getI()][figure.getJ()];
             String name = "black/";
             if (figure instanceof Pawn) {
@@ -143,7 +121,7 @@ public class MyPanel extends JPanel {
             }
             g2d.drawImage(getImage(name), a.getX0(), a.getY0(), a.getWidth(), a.getHeight(), null);
         }
-        for (Figure figure : white) {
+        for (Figure figure : game.getWhite()) {
             Cell a = board[figure.getI()][figure.getJ()];
             String name = "white/";
             if (figure instanceof Pawn) {
@@ -160,26 +138,6 @@ public class MyPanel extends JPanel {
                 name += "king.png";
             }
             g2d.drawImage(getImage(name), a.getX0(), a.getY0(), a.getWidth(), a.getHeight(), null);
-        }
-        if (currentFigure != null) {
-            g2d.setPaint(Color.BLUE);
-            g2d.setStroke(new BasicStroke(6));
-            Cell a = board[currentFigure.getI()][currentFigure.getJ()];
-            g2d.drawRect(a.getX0() + 3, a.getY0() + 3, a.getWidth() - 6, a.getHeight() - 6);
-        }
-        if (eat != null) {
-            for (Pair pair : eat) {
-                g2d.setPaint(Color.RED);
-                Cell a = board[pair.getI()][pair.getJ()];
-                g2d.drawRect(a.getX0() + 3, a.getY0() + 3, a.getWidth() - 6, a.getHeight() - 6);
-            }
-        }
-        if (go != null) {
-            for (Pair pair : go) {
-                g2d.setPaint(Color.GREEN);
-                Cell a = board[pair.getI()][pair.getJ()];
-                g2d.drawRect(a.getX0() + 3, a.getY0() + 3, a.getWidth() - 6, a.getHeight() - 6);
-            }
         }
     }
 
