@@ -2,14 +2,14 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-public class MyPanel extends JPanel {
+public class GamePanel extends JPanel {
     private final int width;
     private final int height;
     private Point cursor;
     private final Game game;
     private final Cell[][] board;
 
-    public MyPanel(int w, int h) {
+    public GamePanel(int w, int h) {
         width = w;
         height = h;
         int dx = (width - height) / 2;
@@ -64,7 +64,8 @@ public class MyPanel extends JPanel {
     @Override
     public void paint(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
-        g2d.drawImage(getImage("back.jpg"), 0, 0, width, height, null);
+        g2d.setPaint(Color.BLACK);
+        g2d.fillRect( 0, 0, width, height);
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 if ((i + j) % 2 == 0) {
