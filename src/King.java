@@ -37,6 +37,117 @@ public class King extends Figure {
                 }
             }
         }
+        if (!isBlack && I == 7 && J == 4) {
+            boolean good = true;
+            for (Figure figure : cur) {
+                if (figure.getI() == 7 && figure.getJ() == 5) {
+                    good = false;
+                    break;
+                }
+            }
+            if (good) {
+                for (Figure figure : cur) {
+                    if (figure.getI() == 7 && figure.getJ() == 6) {
+                        good = false;
+                        break;
+                    }
+                }
+                if (good) {
+                    for (Figure figure : cur) {
+                        if (figure.getI() == 7 && figure.getJ() == 7 && figure instanceof Rook && !figure.isBlack()) {
+                            ans.add(new Pair(7, 6));
+                            break;
+                        }
+                    }
+                }
+            }
+            good = true;
+            for (Figure figure : cur) {
+                if (figure.getI() == 7 && figure.getJ() == 3) {
+                    good = false;
+                    break;
+                }
+            }
+            if (good) {
+                for (Figure figure : cur) {
+                    if (figure.getI() == 7 && figure.getJ() == 2) {
+                        good = false;
+                        break;
+                    }
+                }
+                if (good) {
+                    for (Figure figure : cur) {
+                        if (figure.getI() == 7 && figure.getJ() == 1) {
+                            good = false;
+                            break;
+                        }
+                    }
+                    if (good) {
+                        for (Figure figure : cur) {
+                            if (figure.getI() == 7 && figure.getJ() == 0 && figure instanceof Rook && !figure.isBlack()) {
+                                ans.add(new Pair(7, 2));
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        } else if (isBlack && I == 0 && J == 4) {
+            boolean good = true;
+            for (Figure figure : cur) {
+                if (figure.getI() == 0 && figure.getJ() == 5) {
+                    good = false;
+                    break;
+                }
+            }
+            if (good) {
+                for (Figure figure : cur) {
+                    if (figure.getI() == 0 && figure.getJ() == 6) {
+                        good = false;
+                        break;
+                    }
+                }
+                if (good) {
+                    for (Figure figure : cur) {
+                        if (figure.getI() == 0 && figure.getJ() == 7 && figure instanceof Rook && figure.isBlack()) {
+                            ans.add(new Pair(0, 6));
+                            break;
+                        }
+                    }
+                }
+            }
+            good = true;
+            for (Figure figure : cur) {
+                if (figure.getI() == 0 && figure.getJ() == 3) {
+                    good = false;
+                    break;
+                }
+            }
+            if (good) {
+                for (Figure figure : cur) {
+                    if (figure.getI() == 0 && figure.getJ() == 2) {
+                        good = false;
+                        break;
+                    }
+                }
+                if (good) {
+                    for (Figure figure : cur) {
+                        if (figure.getI() == 0 && figure.getJ() == 1) {
+                            good = false;
+                            break;
+                        }
+                    }
+                    if (good) {
+                        for (Figure figure : cur) {
+                            if (figure.getI() == 0 && figure.getJ() == 0 && figure instanceof Rook && figure.isBlack()) {
+                                ans.add(new Pair(0, 2));
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
         return ans;
     }
 }

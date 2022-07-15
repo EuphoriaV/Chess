@@ -3,6 +3,7 @@ import java.util.ArrayList;
 
 public class Game {
     private boolean blackTurn = false;
+    private boolean onSwitch = false;
     private int curI = -1, curJ = -1;
     private Figure currentFigure;
     private final ArrayList<Figure> black = new ArrayList<>();
@@ -66,6 +67,49 @@ public class Game {
                 if (pair.getJ() == curJ && pair.getI() == curI) {
                     currentFigure.setI(curI);
                     currentFigure.setJ(curJ);
+                    if (currentFigure instanceof King) {
+                        if (currentFigure.isBlack()) {
+                            if (curI == 0 && curJ == 2) {
+                                for (Figure figure : cur1) {
+                                    if (figure.getI() == 0 && figure.getJ() == 0 && figure instanceof Rook) {
+                                        figure.setJ(3);
+                                        break;
+                                    }
+                                }
+                            }
+                            if (curI == 0 && curJ == 6) {
+                                for (Figure figure : cur1) {
+                                    if (figure.getI() == 0 && figure.getJ() == 7 && figure instanceof Rook) {
+                                        figure.setJ(5);
+                                        break;
+                                    }
+                                }
+                            }
+                        } else {
+                            if (curI == 7 && curJ == 2) {
+                                for (Figure figure : cur1) {
+                                    if (figure.getI() == 7 && figure.getJ() == 0 && figure instanceof Rook) {
+                                        figure.setJ(3);
+                                        break;
+                                    }
+                                }
+                            }
+                            if (curI == 7 && curJ == 6) {
+                                for (Figure figure : cur1) {
+                                    if (figure.getI() == 7 && figure.getJ() == 7 && figure instanceof Rook) {
+                                        figure.setJ(5);
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    } else if (currentFigure instanceof Pawn) {
+                        if (currentFigure.isBlack() && currentFigure.getI() == 7) {
+                            onSwitch = true;
+                        } else if (!currentFigure.isBlack() && currentFigure.getI() == 0) {
+                            onSwitch = true;
+                        }
+                    }
                     blackTurn = !blackTurn;
                     currentFigure = null;
                     return;
@@ -75,6 +119,13 @@ public class Game {
                 if (pair.getJ() == curJ && pair.getI() == curI) {
                     currentFigure.setI(curI);
                     currentFigure.setJ(curJ);
+                    if (currentFigure instanceof Pawn) {
+                        if (currentFigure.isBlack() && currentFigure.getI() == 7) {
+                            onSwitch = true;
+                        } else if (!currentFigure.isBlack() && currentFigure.getI() == 0) {
+                            onSwitch = true;
+                        }
+                    }
                     blackTurn = !blackTurn;
                     currentFigure = null;
                     for (Figure figure : cur2) {
@@ -116,4 +167,47 @@ public class Game {
         return go;
     }
 
+    public boolean isBlackTurn() {
+        return blackTurn;
+    }
+
+    public boolean isOnSwitch() {
+        return onSwitch;
+    }
+
+    public void switchPawn(int num) {
+        onSwitch = false;
+        int i = -1, j = -1;
+        if (isBlackTurn()) {
+            for (Figure figure : white) {
+                if (figure instanceof Pawn && figure.getI() == 0) {
+                    i = figure.getI();
+                    j = figure.getJ();
+                    white.remove(figure);
+                    break;
+                }
+            }
+            switch (num) {
+                case 0 -> white.add(new Queen(i, j, false));
+                case 1 -> white.add(new Rook(i, j, false));
+                case 2 -> white.add(new Bishop(i, j, false));
+                case 3 -> white.add(new Knight(i, j, false));
+            }
+        } else {
+            for (Figure figure : black) {
+                if (figure instanceof Pawn && figure.getI() == 7) {
+                    i = figure.getI();
+                    j = figure.getJ();
+                    black.remove(figure);
+                    break;
+                }
+            }
+            switch (num) {
+                case 0 -> black.add(new Queen(i, j, true));
+                case 1 -> black.add(new Rook(i, j, true));
+                case 2 -> black.add(new Bishop(i, j, true));
+                case 3 -> black.add(new Knight(i, j, true));
+            }
+        }
+    }
 }
