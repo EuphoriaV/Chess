@@ -1,5 +1,8 @@
 import java.util.ArrayList;
 
+/*
+ * Пешка, ходит вперед на 1 или на 2, если на старте. Ест вперед по диагонали на 1
+ * */
 public class Pawn extends Figure {
     public Pawn(int i, int j, boolean isBlack) {
         super(i, j, isBlack);

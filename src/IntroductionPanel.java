@@ -1,6 +1,9 @@
 import javax.swing.*;
 import java.awt.*;
 
+/*
+ * Ебейшая заставка
+ * */
 public class IntroductionPanel extends JPanel {
     private final int width;
     private final int height;

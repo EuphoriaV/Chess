@@ -1,6 +1,9 @@
 import javax.swing.*;
 import java.awt.*;
 
+/*
+ * Панель, где все правила шахмат
+ * */
 public class RulesPanel extends JPanel {
     private final int width;
     private final int height;

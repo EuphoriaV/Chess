@@ -1,5 +1,8 @@
 import java.util.ArrayList;
 
+/*
+ * Слон, ест и ходит по диагонали
+ * */
 public class Bishop extends Figure {
     public Bishop(int i, int j, boolean isBlack) {
         super(i, j, isBlack);

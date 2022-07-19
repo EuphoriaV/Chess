@@ -1,10 +1,9 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+/**/
 public class MyFrame extends JFrame {
     private Stage curStage = Stage.INTRODUCTION;
     private final int width;
@@ -37,13 +36,14 @@ public class MyFrame extends JFrame {
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         width = (int) screenSize.getWidth();
-        height = (int) screenSize.getHeight();
+        height = (int) screenSize.getHeight() - 500;
         introPanel = new IntroductionPanel(width, height);
         menuPanel = new MenuPanel(width, height);
         add(introPanel);
         pack();
         Timer timer = new Timer(5, null);
         timer.addActionListener(e -> {
+            // заставка
             if (curStage == Stage.INTRODUCTION) {
                 introPanel.setColor(introPanel.getColor() + 2);
                 introPanel.repaint();
@@ -54,17 +54,21 @@ public class MyFrame extends JFrame {
                     pack();
                 }
             } else if (curStage == Stage.MENU) {
+                // меню  и действия по кнопкам
                 int num = menuPanel.getNumOfButton();
                 if (num == 3) {
+                    // выход
                     System.exit(0);
                 }
                 if (num == 2) {
+                    // правила
                     curStage = Stage.RULES;
                     getContentPane().removeAll();
                     add(new RulesPanel(width, height));
                     pack();
                 }
                 if (num == 1) {
+                    // игра
                     curStage = Stage.GAME;
                     getContentPane().removeAll();
                     add(new GamePanel(width, height));

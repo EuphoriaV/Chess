@@ -1,5 +1,8 @@
 import java.util.ArrayList;
 
+/*
+ * Ферзь, ходит по диагонали, горизонтали и вертикали
+ * */
 public class Queen extends Figure {
     public Queen(int i, int j, boolean isBlack) {
         super(i, j, isBlack);

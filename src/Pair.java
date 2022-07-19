@@ -1,3 +1,6 @@
+/*
+ * Класс пара, нужен для координат
+ * */
 public class Pair {
     private final int i;
     private final int j;

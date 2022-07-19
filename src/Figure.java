@@ -1,5 +1,8 @@
 import java.util.ArrayList;
 
+/*
+ * Абстрактный класс для всех фигур, содержит координаты и цвет
+ * */
 public abstract class Figure {
     protected int I, J;
     protected final boolean isBlack;

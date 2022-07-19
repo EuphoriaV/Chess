@@ -1,5 +1,8 @@
 import java.util.ArrayList;
 
+/*
+ * Конь, ходит и ест буквой Г
+ * */
 public class Knight extends Figure {
     public Knight(int i, int j, boolean isBlack) {
         super(i, j, isBlack);

@@ -1,5 +1,8 @@
 import java.util.ArrayList;
 
+/*
+ * Король ходит и ест соседние клетки + рокировка
+ * */
 public class King extends Figure {
     public King(int i, int j, boolean isBlack) {
         super(i, j, isBlack);
@@ -37,6 +40,7 @@ public class King extends Figure {
                 }
             }
         }
+        //Проверка на рокировку белого короля
         if (!isBlack && I == 7 && J == 4) {
             boolean good = true;
             for (Figure figure : cur) {
@@ -92,7 +96,9 @@ public class King extends Figure {
                     }
                 }
             }
-        } else if (isBlack && I == 0 && J == 4) {
+        }
+        //Проверка на рокировку белого короля
+        else if (isBlack && I == 0 && J == 4) {
             boolean good = true;
             for (Figure figure : cur) {
                 if (figure.getI() == 0 && figure.getJ() == 5) {

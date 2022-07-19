@@ -1,5 +1,8 @@
 import java.util.ArrayList;
 
+/*
+ * Ладья, ходит и ест по горизонтали и вертикали
+ * */
 public class Rook extends Figure {
 
     public Rook(int i, int j, boolean isBlack) {

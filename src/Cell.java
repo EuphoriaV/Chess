@@ -1,3 +1,6 @@
+/*
+ * Класс нужен, чтобы по координатам от 0 до 7 понимать координаты в пикселях
+ * */
 public class Cell {
     private final int x0, x1, y0, y1, width, height;
 

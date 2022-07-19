@@ -2,6 +2,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
+/*
+ * Класс рисующий шахматы и взаимодействующий с юзером
+ * */
 public class GamePanel extends JPanel {
     private final int width;
     private final int height;
@@ -26,6 +29,7 @@ public class GamePanel extends JPanel {
         timer.addActionListener(e -> {
             cursor = MouseInfo.getPointerInfo().getLocation();
             repaint();
+            // Сопоставляет координаты экрана и клетки доски
             for (int i = 0; i < 8; i++) {
                 for (int j = 0; j < 8; j++) {
                     Cell a = board[i][j];
@@ -35,6 +39,7 @@ public class GamePanel extends JPanel {
                     }
                 }
             }
+            // Выключает все действия, ждет выбора новой фигуры взамен пешки
             if (game.isOnSwitch()) {
                 if (game.isBlackTurn()) {
                     onSwitch = 0;
@@ -54,8 +59,10 @@ public class GamePanel extends JPanel {
             @Override
             public void mousePressed(MouseEvent e) {
                 if (onSwitch == -1) {
+                    // обычное действие
                     game.act();
                 } else {
+                    // замена пешки
                     int num;
                     if (cursor.getX() < (width - height) / 2.0) {
                         if (cursor.getY() < height / 4.0) {
@@ -91,6 +98,7 @@ public class GamePanel extends JPanel {
     public void paint(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
         g2d.drawImage(getImage("back.jpg"), 0, 0, width, height, null);
+        //рисует доску
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 if ((i + j) % 2 == 0) {
@@ -104,6 +112,7 @@ public class GamePanel extends JPanel {
                 g2d.drawRect(a.getX0(), a.getY0(), a.getWidth(), a.getHeight());
             }
         }
+        // помечает текущую клетку
         if (game.getCurrentFigure() != null) {
             g2d.setPaint(Color.YELLOW);
             Cell a = board[game.getCurrentFigure().getI()][game.getCurrentFigure().getJ()];
@@ -111,6 +120,7 @@ public class GamePanel extends JPanel {
             g2d.setPaint(Color.BLACK);
             g2d.drawRect(a.getX0(), a.getY0(), a.getWidth(), a.getHeight());
         }
+        // помечает клетки, где фигура, которую можно съесть
         if (game.getEat() != null) {
             for (Pair pair : game.getEat()) {
                 g2d.setPaint(Color.RED);
@@ -120,6 +130,7 @@ public class GamePanel extends JPanel {
                 g2d.drawRect(a.getX0(), a.getY0(), a.getWidth(), a.getHeight());
             }
         }
+        // помечает клетки, куда можно сходить
         if (game.getGo() != null) {
             for (Pair pair : game.getGo()) {
                 g2d.setPaint(Color.GREEN);
@@ -129,6 +140,7 @@ public class GamePanel extends JPanel {
                 g2d.drawRect(a.getX0(), a.getY0(), a.getWidth(), a.getHeight());
             }
         }
+        // все черные фигуры
         for (Figure figure : game.getBlack()) {
             Cell a = board[figure.getI()][figure.getJ()];
             String name = "black/";
@@ -147,6 +159,7 @@ public class GamePanel extends JPanel {
             }
             g2d.drawImage(getImage(name), a.getX0(), a.getY0(), a.getWidth(), a.getHeight(), null);
         }
+        // все белые фигуры
         for (Figure figure : game.getWhite()) {
             Cell a = board[figure.getI()][figure.getJ()];
             String name = "white/";
@@ -165,6 +178,7 @@ public class GamePanel extends JPanel {
             }
             g2d.drawImage(getImage(name), a.getX0(), a.getY0(), a.getWidth(), a.getHeight(), null);
         }
+        // это если меняется пешка
         if (onSwitch > -1) {
             String directory = (onSwitch == 0) ? "white/" : "black/";
             g2d.drawImage(getImage(directory + "queen.png"), 0, 0, (width - height) / 2, height / 4, null);

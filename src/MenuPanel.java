@@ -2,6 +2,9 @@ import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
 
+/*
+ * Меню панель, где есть все кнопки
+ * */
 public class MenuPanel extends JPanel {
     private int numOfButton = 0;
 
@@ -18,7 +21,7 @@ public class MenuPanel extends JPanel {
         setPreferredSize(new Dimension(w, h));
         Color brown = new Color(78, 52, 35), white = new Color(255, 253, 208);
         setBackground(white);
-        LineBorder border = new LineBorder(brown, 10);
+        LineBorder border = new LineBorder(brown, 20);
         JButton game = new JButton("Играть");
         game.setBounds(w / 3, h / 7, w / 3, h / 7);
         game.setFont(new Font("Verdana", Font.BOLD, 72));
