@@ -79,6 +79,7 @@ public class Game {
 
     // проверка на возможность походить
     public boolean checkGo() {
+        boolean ans = false;
         ArrayList<Figure> cur1, cur2;
         if (blackTurn) {
             cur1 = black;
@@ -87,22 +88,24 @@ public class Game {
             cur1 = white;
             cur2 = black;
         }
+        Pair[] positions = new Pair[cur1.size()];
+        for (int i = 0; i < cur1.size(); i++) {
+            positions[i] = new Pair(cur1.get(i).getI(), cur1.get(i).getJ());
+        }
         for (Figure figure : cur1) {
-            int prevI = figure.getI(), prevJ = figure.getJ();
             ArrayList<Pair> goTo = figure.checkGo(black, white);
             for (Pair pair : goTo) {
-                figure.setI(pair.getI());
-                figure.setJ(pair.getJ());
+                go(figure, pair.getI(), pair.getJ());
                 if (!chechShah()) {
-                    figure.setI(prevI);
-                    figure.setJ(prevJ);
-                    return true;
+                    ans = true;
                 }
-                figure.setI(prevI);
-                figure.setJ(prevJ);
+                for (int i = 0; i < cur1.size(); i++) {
+                    cur1.get(i).setI(positions[i].getI());
+                    cur1.get(i).setJ(positions[i].getJ());
+                }
             }
         }
-        return false;
+        return ans;
     }
 
     public void go(Figure figureGo, int goI, int goJ) {
@@ -112,11 +115,9 @@ public class Game {
         } else {
             cur1 = white;
         }
-        figureGo.setI(goI);
-        figureGo.setJ(goJ);
         // рокировка
-        if (figureGo instanceof King) {
-            if (figureGo.isBlack()) {
+        if (figureGo instanceof King && figureGo.getJ() == 4) {
+            if (figureGo.isBlack() && figureGo.getI() == 0) {
                 if (goI == 0 && goJ == 2) {
                     for (Figure figure : cur1) {
                         if (figure.getI() == 0 && figure.getJ() == 0 && figure instanceof Rook) {
@@ -133,7 +134,7 @@ public class Game {
                         }
                     }
                 }
-            } else {
+            } else if (!figureGo.isBlack() && figureGo.getI() == 7) {
                 if (goI == 7 && goJ == 2) {
                     for (Figure figure : cur1) {
                         if (figure.getI() == 7 && figure.getJ() == 0 && figure instanceof Rook) {
@@ -152,6 +153,8 @@ public class Game {
                 }
             }
         }
+        figureGo.setI(goI);
+        figureGo.setJ(goJ);
     }
 
     public void eat(Figure figureEat, int eatI, int eatJ) {
@@ -205,6 +208,24 @@ public class Game {
                     go(currentFigure, curI, curJ);
                     // если шах, то отмена
                     if (chechShah()) {
+                        // отмена рокировки
+                        if (currentFigure instanceof King && prevJ == 4 && ((currentFigure.isBlack() && prevI == 0) || (!currentFigure.isBlack() && prevI == 7))) {
+                            if (currentFigure.getJ() == 2) {
+                                for (Figure figure : cur1) {
+                                    if (figure instanceof Rook && figure.getJ() == 3 && figure.getI() == currentFigure.getI()) {
+                                        figure.setJ(0);
+                                        break;
+                                    }
+                                }
+                            } else if (currentFigure.getJ() == 6) {
+                                for (Figure figure : cur1) {
+                                    if (figure instanceof Rook && figure.getJ() == 5 && figure.getI() == currentFigure.getI()) {
+                                        figure.setJ(7);
+                                        break;
+                                    }
+                                }
+                            }
+                        }
                         currentFigure.setI(prevI);
                         currentFigure.setJ(prevJ);
                     } else {
