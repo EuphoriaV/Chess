@@ -1,6 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
 
 /*
  * Класс рисующий шахматы и взаимодействующий с юзером
@@ -8,6 +9,7 @@ import java.awt.event.*;
 public class GamePanel extends JPanel {
     private final int width;
     private final int height;
+    private int result = 0;
     private Point cursor;
     private final Game game;
     private final Cell[][] board;
@@ -28,7 +30,6 @@ public class GamePanel extends JPanel {
         Timer timer = new Timer(5, null);
         timer.addActionListener(e -> {
             cursor = MouseInfo.getPointerInfo().getLocation();
-            repaint();
             // Сопоставляет координаты экрана и клетки доски
             for (int i = 0; i < 8; i++) {
                 for (int j = 0; j < 8; j++) {
@@ -49,6 +50,8 @@ public class GamePanel extends JPanel {
             } else {
                 onSwitch = -1;
             }
+            result = game.getResult();
+            repaint();
         });
         timer.start();
         addMouseListener(new MouseListener() {
@@ -58,6 +61,9 @@ public class GamePanel extends JPanel {
 
             @Override
             public void mousePressed(MouseEvent e) {
+                if (result != 0) {
+                    return;
+                }
                 if (onSwitch == -1) {
                     // обычное действие
                     game.act();
@@ -140,29 +146,15 @@ public class GamePanel extends JPanel {
                 g2d.drawRect(a.getX0(), a.getY0(), a.getWidth(), a.getHeight());
             }
         }
-        // все черные фигуры
-        for (Figure figure : game.getBlack()) {
-            Cell a = board[figure.getI()][figure.getJ()];
-            String name = "black/";
-            if (figure instanceof Pawn) {
-                name += "pawn.png";
-            } else if (figure instanceof Rook) {
-                name += "rook.png";
-            } else if (figure instanceof Knight) {
-                name += "knight.png";
-            } else if (figure instanceof Bishop) {
-                name += "bishop.png";
-            } else if (figure instanceof Queen) {
-                name += "queen.png";
-            } else {
-                name += "king.png";
-            }
-            g2d.drawImage(getImage(name), a.getX0(), a.getY0(), a.getWidth(), a.getHeight(), null);
-        }
-        // все белые фигуры
-        for (Figure figure : game.getWhite()) {
+        // все фигуры
+        ArrayList<Figure> cur = (ArrayList<Figure>) game.getWhite().clone();
+        cur.addAll(game.getBlack());
+        for (Figure figure : cur) {
             Cell a = board[figure.getI()][figure.getJ()];
             String name = "white/";
+            if (figure.isBlack()) {
+                name = "black/";
+            }
             if (figure instanceof Pawn) {
                 name += "pawn.png";
             } else if (figure instanceof Rook) {
@@ -185,6 +177,22 @@ public class GamePanel extends JPanel {
             g2d.drawImage(getImage(directory + "rook.png"), 0, height / 4, (width - height) / 2, height / 4, null);
             g2d.drawImage(getImage(directory + "bishop.png"), 0, height / 2, (width - height) / 2, height / 4, null);
             g2d.drawImage(getImage(directory + "knight.png"), 0, 3 * height / 4, (width - height) / 2, height / 4, null);
+        }
+        g2d.setPaint(Color.GREEN);
+        g2d.setFont(new Font("Verdana", Font.BOLD, 72));
+        switch (result) {
+            case 1 -> {
+                g2d.drawString("Мат!", 29 * width / 64, 7 * height / 16);
+                g2d.drawString("Белые выиграли", 5 * width / 16, 9 * height / 16);
+            }
+            case 2 -> {
+                g2d.drawString("Мат!", 29 * width / 64, 7 * height / 16);
+                g2d.drawString("Черные выиграли", 5 * width / 16, 9 * height / 16);
+            }
+            case -1 -> {
+                g2d.drawString("Пат!", 29 * width / 64, 7 * height / 16);
+                g2d.drawString("Никто не выиграл", 5 * width / 16, 9 * height / 16);
+            }
         }
     }
 

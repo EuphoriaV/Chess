@@ -36,7 +36,7 @@ public class MyFrame extends JFrame {
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         width = (int) screenSize.getWidth();
-        height = (int) screenSize.getHeight() - 500;
+        height = (int) screenSize.getHeight();
         introPanel = new IntroductionPanel(width, height);
         menuPanel = new MenuPanel(width, height);
         add(introPanel);

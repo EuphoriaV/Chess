@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.util.ArrayList;
 
 public class Game {
+    private int result = 0;
     private boolean blackTurn = false;
     private boolean onSwitch = false;
     private int curI = -1, curJ = -1;
@@ -43,6 +44,9 @@ public class Game {
             } else {
                 eat = null;
                 go = null;
+            }
+            if (result != 0) {
+                timer.stop();
             }
         });
         timer.start();
@@ -88,21 +92,61 @@ public class Game {
             cur1 = white;
             cur2 = black;
         }
-        Pair[] positions = new Pair[cur1.size()];
-        for (int i = 0; i < cur1.size(); i++) {
-            positions[i] = new Pair(cur1.get(i).getI(), cur1.get(i).getJ());
-        }
+        //можно ли спастись от мата ходом
         for (Figure figure : cur1) {
             ArrayList<Pair> goTo = figure.checkGo(black, white);
+            int prevI = figure.getI(), prevJ = figure.getJ();
             for (Pair pair : goTo) {
                 go(figure, pair.getI(), pair.getJ());
                 if (!chechShah()) {
                     ans = true;
                 }
-                for (int i = 0; i < cur1.size(); i++) {
-                    cur1.get(i).setI(positions[i].getI());
-                    cur1.get(i).setJ(positions[i].getJ());
+                if (figure instanceof King && prevJ == 4 && ((figure.isBlack() && prevI == 0) || (!figure.isBlack() && prevI == 7))) {
+                    if (figure.getJ() == 2) {
+                        for (Figure figure1 : cur1) {
+                            if (figure1 instanceof Rook && figure1.getJ() == 3 && figure1.getI() == figure.getI()) {
+                                figure1.setJ(0);
+                                break;
+                            }
+                        }
+                    } else if (figure.getJ() == 6) {
+                        for (Figure figure1 : cur1) {
+                            if (figure1 instanceof Rook && figure1.getJ() == 5 && figure1.getI() == figure.getI()) {
+                                figure1.setJ(7);
+                                break;
+                            }
+                        }
+                    }
                 }
+                figure.setI(prevI);
+                figure.setJ(prevJ);
+            }
+        }
+        //можно ли спастись от мата поеданием
+        for (Figure figure : cur1) {
+            ArrayList<Pair> eatTo = figure.checkEat(black, white);
+            int prevI = figure.getI(), prevJ = figure.getJ();
+            for (Pair pair : eatTo) {
+                Figure eaten = null;
+                for (Figure figure1 : cur2) {
+                    if (pair.getJ() == figure1.getJ() && pair.getI() == figure1.getI()) {
+                        eaten = figure1;
+                        break;
+                    }
+                }
+                //типо ем
+                assert eaten != null;
+                eaten.setI(-10);
+                eaten.setJ(-10);
+                figure.setI(pair.getI());
+                figure.setJ(pair.getJ());
+                if (!chechShah()) {
+                    ans = true;
+                }
+                eaten.setI(figure.getI());
+                eaten.setJ(figure.getJ());
+                figure.setI(prevI);
+                figure.setJ(prevJ);
             }
         }
         return ans;
@@ -175,16 +219,6 @@ public class Game {
     }
 
     public void act() {
-        //проверка
-        if (!checkGo() && chechShah()) {
-            System.out.println("mat");
-            return;
-        } else if (!checkGo() && !chechShah()) {
-            System.out.println("nat");
-            return;
-        } else if (chechShah()) {
-            System.out.println("wax");
-        }
         // 1 лист текущие фигуры, 2 - вражеские
         ArrayList<Figure> cur1, cur2;
         if (blackTurn) {
@@ -240,7 +274,6 @@ public class Game {
                         }
                     }
                     currentFigure = null;
-                    return;
                 }
             }
             for (Pair pair : eat) {
@@ -270,7 +303,18 @@ public class Game {
                         }
                     }
                     currentFigure = null;
-                    return;
+                }
+            }
+        }
+        //проверка
+        if (!checkGo()) {
+            if (!chechShah()) {
+                result = -1;
+            } else {
+                if (blackTurn) {
+                    result = 1;
+                } else {
+                    result = 2;
                 }
             }
         }
@@ -312,6 +356,10 @@ public class Game {
         return onSwitch;
     }
 
+    public int getResult() {
+        return result;
+    }
+
     // замена пешки
     public void switchPawn(int num) {
         onSwitch = false;
@@ -345,6 +393,18 @@ public class Game {
                 case 1 -> black.add(new Rook(i, j, true));
                 case 2 -> black.add(new Bishop(i, j, true));
                 case 3 -> black.add(new Knight(i, j, true));
+            }
+        }
+        //проверка
+        if (!checkGo()) {
+            if (!chechShah()) {
+                result = -1;
+            } else {
+                if (blackTurn) {
+                    result = 1;
+                } else {
+                    result = 2;
+                }
             }
         }
     }
